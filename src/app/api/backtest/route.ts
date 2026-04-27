@@ -29,8 +29,8 @@ const HISTORY_FILE = path.join(PROJECT_ROOT, 'data', 'backtest_history.json')
 // Python 脚本模板路径 - 使用 process.cwd() 确保在 Next.js 环境下正确解析
 const TEMPLATE_PATH = path.join(process.cwd(), 'src', 'app', 'api', 'backtest', 'backtest_template.py')
 
-// Python 回测模块路径 - portfolio-backtest 项目的 test.py
-const BACKTEST_MODULE_PATH = path.join(PROJECT_ROOT, 'portfolio-backtest', 'test.py')
+// 注意：回测逻辑已完全内嵌到 backtest_template.py 中
+// 不再依赖外部的 portfolio-backtest 模块
 
 /**
  * POST /api/backtest - 运行回测
@@ -229,9 +229,9 @@ async function executePythonScript(
   configPath: string,
   csvPath: string
 ): Promise<{ stdout: string; stderr: string }> {
-  // 构建完整的命令行参数
-  // 格式: python <脚本路径> <配置路径> <模块路径> <CSV输出路径>
-  const pythonScript = `python "${scriptPath}" "${configPath}" "${BACKTEST_MODULE_PATH}" "${csvPath}"`
+  // 构建命令行参数（回测逻辑已内嵌，只需要传递配置和输出路径）
+  // 格式: python <脚本路径> <配置路径> <dummy> <CSV输出路径>
+  const pythonScript = `python "${scriptPath}" "${configPath}" "embedded" "${csvPath}"`
 
   // 使用 Promise 包装子进程操作，实现异步回调
   return new Promise((resolve, reject) => {
